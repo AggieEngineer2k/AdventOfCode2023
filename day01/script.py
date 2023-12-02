@@ -7,7 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardi
 import re
 from common.input_parser import InputParser
 
-# Define the script to solve the puzzle.
+# Define the puzzle solver.
 class Solver:
     input : "list(str)"
 
