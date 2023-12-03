@@ -1,39 +1,34 @@
 import pytest
 from day03.script import Solver
 
-# @pytest.mark.parametrize('learned,expected', [
-#     ({
-#         "id": 1,
-#         "red": 4,
-#         "green": 2,
-#         "blue": 6
-#     },48),
-#     ({
-#         "id": 2,
-#         "red": 1,
-#         "green": 3,
-#         "blue": 4
-#     },12),
-#     ({
-#         "id": 3,
-#         "red": 20,
-#         "green": 13,
-#         "blue": 6
-#     },1560),
-#     ({
-#         "id": 4,
-#         "red": 14,
-#         "green": 3,
-#         "blue": 15
-#     },630),
-#     ({
-#         "id": 5,
-#         "red": 6,
-#         "green": 3,
-#         "blue": 2
-#     },36)
-# ])
-# def test_solver_power(learned : dict, expected : int):
-#     solver = Solver()
-#     actual = solver.power(learned)
-#     assert actual == expected
+@pytest.mark.parametrize('schematic,expected', [
+    ([
+        "467..114..",
+        "...*......",
+        "..35..633.",
+        "......#...",
+        "617*......",
+        ".....+.58.",
+        "..592.....",
+        "......755.",
+        "...$.*....",
+        ".664.598.."
+    ],[467,35,633,617,592,755,664,598]),
+    # Test literal edge cases.
+    ([
+        "123....321",
+        "*456..654*",
+        "789....987",
+        "000....999"
+    ],[123,321,456,654,789,987]),
+    # Test repeated numbers.
+    ([
+        "321.321.321",
+        ".*.......*.",
+        "123.123.123"
+    ],[321,321,123,123]),
+])
+def test_extractPartNumbers(schematic : "list(str)", expected : "list(int)"):
+    solver = Solver()
+    actual = solver.extractPartNumbers(schematic)
+    assert actual == expected

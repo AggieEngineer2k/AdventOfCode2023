@@ -5,14 +5,36 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardi
 
 # Import helper modules.
 from common.input_parser import InputParser
+import re
+from common.grid import Grid
 
 # Define the puzzle solver.
-class Solver: 
-    def __init__(self, input):
+class Solver:
+    nonsymbol_characters = set('.0123456789')
+
+    def __init__(self, input = []):
         self.input = input
 
+    def extractPartNumbers(self, schematic : "list(str)") -> "list(int)":
+        partNumbers = []
+        grid = Grid()
+        grid.initialize_from_strings(schematic)
+        for token in grid.find_tokens_in_rows(r"(\d+)"):
+            row = token[0]
+            first = token[1]
+            last = token[1] + len(token[2]) - 1
+            number = token[2]
+            logging.debug(f"Found {number} in row {row} starting at position {first} to {last}.")
+            adjacent_characters = grid.get_surrounding_elements(row,first,last)
+            if set(adjacent_characters).issubset(self.nonsymbol_characters):
+                logging.debug(f"Number '{number}' is not a part number.")
+            else:
+                logging.debug(f"Number '{number}' is a part number.")
+                partNumbers.append(int(number))
+        return partNumbers
+
     def day_1(self):
-        result = None
+        result = sum(self.extractPartNumbers(self.input))
         print(f"Day 1: {result}")
 
     def day_2(self):
