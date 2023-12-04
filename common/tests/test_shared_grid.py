@@ -73,5 +73,5 @@ def test_Grid_get_surrounding_elements(row : int, start : int, end : int, expect
     ]
     grid = Grid()
     grid.initialize_from_strings(strings)
-    surrounding_elements = [x for x in grid.get_surrounding_elements(row, start, end)]
+    surrounding_elements = [x['value'] for x in grid.get_surrounding_elements(row, start, end)]
     assert surrounding_elements == expected
