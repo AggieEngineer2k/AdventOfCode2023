@@ -45,6 +45,7 @@ class Solver:
         for token in grid.find_tokens_in_rows(r"[*]"):
             adjacent_parts = [x for x in parts_with_gears if (x['gear']['row'],x['gear']['column']) == (token['row'],token['start'])]
             logging.debug(f"Gear at [{token['row']},{token['start']}] has {len(adjacent_parts)} parts.")
+            # Assumption: A gear may be adjacent to at most 2 parts.
             if(len(adjacent_parts) == 2):
                 yield (int(adjacent_parts[0]['part']['value']) * int(adjacent_parts[1]['part']['value']))
 
