@@ -12,6 +12,19 @@ class Solver:
     def __init__(self, input = []):
         self.input = input
 
+    def parse_input(self, input : "list(str)") -> "list":
+        cards = {}
+        for card in input:
+            sections = re.split(r':|\|',card)
+            card_number = int(re.find(r'(\d+)',sections[0]))
+            winning_numbers = [x for x in re.findall(r'(\d+)',sections[1])]
+            have_numbers = [x for x in re.findall(r'(\d+)',sections[2])]
+            matches = len([x for x in set(winning_numbers) & set(have_numbers)])
+            points = 0
+            if matches > 0:
+                points = int(math.pow(2, matches - 1))
+            cards[] = {}
+
     def get_card_score(self, card : str) -> int:
         sections = re.split(r':|\|',card)
         winning_numbers = [x for x in re.findall(r'(\d+)',sections[1])]
