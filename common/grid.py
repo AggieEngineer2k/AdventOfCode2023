@@ -12,7 +12,13 @@ class Grid:
         for row_index in range(len(self.elements)):
             row = ''.join(self.elements[row_index])
             for m in re.finditer(pattern, row):
-                yield (row_index, m.start(0), m.group(0))
+                #yield (row_index, m.start(0), m.group(0))
+                yield {
+                    "row": row_index,
+                    "start": m.start(0),
+                    "end": m.start(0) + len(m.group(0)) - 1,
+                    "value": m.group(0)
+                }
 
     def get_element(self, row : int, column : int):
         return {

@@ -24,16 +24,16 @@ def test_Grid_initialize_from_strings():
         ],
         r"\d",
         [
-            (0, 1, '1'), 
-            (0, 3, '2'), 
-            (0, 5, '3'), 
-            (1, 0, '4'), 
-            (1, 2, '5'), 
-            (1, 4, '6'), 
-            (1, 6, '7'), 
-            (2, 1, '8'), 
-            (2, 3, '9'), 
-            (2, 5, '0') 
+            {'row':0, 'start':1, 'end':1, 'value':'1'}, 
+            {'row':0, 'start':3, 'end':3, 'value':'2'}, 
+            {'row':0, 'start':5, 'end':5, 'value':'3'}, 
+            {'row':1, 'start':0, 'end':0, 'value':'4'}, 
+            {'row':1, 'start':2, 'end':2, 'value':'5'}, 
+            {'row':1, 'start':4, 'end':4, 'value':'6'}, 
+            {'row':1, 'start':6, 'end':6, 'value':'7'}, 
+            {'row':2, 'start':1, 'end':1, 'value':'8'}, 
+            {'row':2, 'start':3, 'end':3, 'value':'9'}, 
+            {'row':2, 'start':5, 'end':5, 'value':'0'} 
         ]
     ),
     (
@@ -42,9 +42,9 @@ def test_Grid_initialize_from_strings():
         ],
         r"(\d+)",
         [
-            (0, 0, '1'), 
-            (0, 2, '21'), 
-            (0, 5, '321'),
+            {'row':0, 'start':0, 'end':0, 'value':'1'}, 
+            {'row':0, 'start':2, 'end':3, 'value':'21'}, 
+            {'row':0, 'start':5, 'end':7, 'value':'321'},
         ]
     )
 ])
