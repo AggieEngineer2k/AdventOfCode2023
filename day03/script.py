@@ -15,7 +15,7 @@ class Solver:
     def __init__(self, input = []):
         self.input = input
 
-    def extractPartNumbers(self, schematic : "list(str)") -> "list(int)":
+    def extract_part_numbers(self, schematic : "list(str)") -> "list(int)":
         partNumbers = []
         grid = Grid()
         grid.initialize_from_strings(schematic)
@@ -50,7 +50,7 @@ class Solver:
                 yield (int(adjacent_parts[0]['part']['value']) * int(adjacent_parts[1]['part']['value']))
 
     def day_1(self):
-        result = sum(self.extractPartNumbers(self.input))
+        result = sum(self.extract_part_numbers(self.input))
         print(f"Day 1: {result}")
 
     def day_2(self):
