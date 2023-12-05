@@ -35,9 +35,9 @@ class Solver:
     def __init__(self, input = []):
         self.input = input
 
-    def parse_input(self, input : "list(str)"):
+    def parse_input(self, input : "list(str)" = None):
         result = {}
-        for line in input:
+        for line in input or self.input:
             if re.match('seeds:', line):
                 result['seeds'] = [int(x) for x in re.findall(r'(\d+)', line)]
             elif re.match(r'([a-z-]+) map:', line):
@@ -63,17 +63,21 @@ class Solver:
         return result
 
     def part_1(self):
-        result = None
+        result = min([self.get_location_for_seed(x) for x in self.parsed_input['seeds']])
         print(f"Part 1: {result}")
 
     def part_2(self):
-        result = None
+        result = sys.maxsize
+        for start, length in zip(self.parsed_input['seeds'][0::2],self.parsed_input['seeds'][1::2]):
+            for seed in range(start,length):
+                result = min(result, self.get_location_for_seed(seed))
         print(f"Part 2: {result}")
 
 # Parse the input file.
 input = InputParser.parse_lines(__file__, "input.txt")
 # Instantiate the puzzle solver with the parsed input.
 solver = Solver(input)
+solver.parse_input()
 # Solve the puzzles.
 solver.part_1()
 solver.part_2()
