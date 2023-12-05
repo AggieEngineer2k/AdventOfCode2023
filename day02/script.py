@@ -39,20 +39,20 @@ class Solver:
     def power(self, learned : dict) -> int:
         return learned["red"] * learned["green"] * learned["blue"]
 
-    def day_1(self):
+    def part_1(self):
         learnings = [self.learn(game) for game in self.input]
         result = sum([learning["id"] if self.possible(learning) else 0 for learning in learnings])
-        print(f"Day 1: {result}")
+        print(f"Part 1: {result}")
 
-    def day_2(self):
+    def part_2(self):
         learnings = [self.learn(game) for game in self.input]
         result = sum([self.power(learning) for learning in learnings])
-        print(f"Day 2: {result}")
+        print(f"Part 2: {result}")
 
 # Parse the input file.
 input = InputParser.parse_lines(__file__, "input.txt")
 # Instantiate the puzzle solver with the parsed input.
 solver = Solver(input)
 # Solve the puzzles.
-solver.day_1()
-solver.day_2()
+solver.part_1()
+solver.part_2()

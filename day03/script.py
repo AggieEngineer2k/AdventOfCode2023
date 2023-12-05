@@ -49,18 +49,18 @@ class Solver:
             if(len(adjacent_parts) == 2):
                 yield (int(adjacent_parts[0]['part']['value']) * int(adjacent_parts[1]['part']['value']))
 
-    def day_1(self):
+    def part_1(self):
         result = sum(self.extract_part_numbers(self.input))
-        print(f"Day 1: {result}")
+        print(f"Part 1: {result}")
 
-    def day_2(self):
+    def part_2(self):
         result = sum(self.extract_gear_ratios(self.input))
-        print(f"Day 2: {result}")
+        print(f"Part 2: {result}")
 
 # Parse the input file.
 input = InputParser.parse_lines(__file__, "input.txt")
 # Instantiate the puzzle solver with the parsed input.
 solver = Solver(input)
 # Solve the puzzles.
-solver.day_1()
-solver.day_2()
+solver.part_1()
+solver.part_2()

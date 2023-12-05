@@ -56,20 +56,20 @@ class Solver:
         result = int(firstDigit + lastDigit)
         return result
     
-    def day_1(self):
+    def part_1(self):
         numbers = [self.findFirstAndLastDigits(string) for string in self.input]
         result = sum(numbers)
-        print(f"Day 1: {result}")
+        print(f"Part 1: {result}")
 
-    def day_2(self):
+    def part_2(self):
         numbers = [self.findFirstAndLastReplacedDigits(string) for string in self.input]
         result = sum(numbers)
-        print(f"Day 2: {result}")
+        print(f"Part 2: {result}")
 
 # Parse the input file.
 input = InputParser.parse_lines(__file__, "input.txt")
 # Instantiate the puzzle solver with the parsed input.
 solver = Solver(input)
 # Solve the puzzles.
-solver.day_1()
-solver.day_2()
+solver.part_1()
+solver.part_2()
