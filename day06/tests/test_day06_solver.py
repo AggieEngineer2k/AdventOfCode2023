@@ -11,3 +11,9 @@ def test_Solver_parse_input():
     assert races[0] == Race(7, 9)
     assert races[1] == Race(15, 40)
     assert races[2] == Race(30, 200)
+
+def test_Solver_parse_input():
+    solver = Solver()
+    races = solver.parse_input(input.split('\n'),is_part_2=True)
+    assert len(races) == 1
+    assert races[0] == Race(71530, 940200)

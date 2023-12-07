@@ -30,3 +30,11 @@ def test_Race_get_winning_options(time : int, distance : int, expected : "list(t
     race = Race(time,distance)
     actual = [x for x in race.get_winning_options()]
     assert actual == expected
+
+@pytest.mark.parametrize('time,distance,expected', [
+    (71530,940200,71503),
+])
+def test_Race_get_number_of_winning_options(time : int, distance : int, expected : int):
+    race = Race(time,distance)
+    actual = race.get_number_of_winning_options()
+    assert actual == expected
