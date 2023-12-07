@@ -1,5 +1,5 @@
 import pytest
-from day07.script import Solver
+from day07.script import Solver,CamelCardHand
 
 input = """32T3K 765
 T55J5 684
@@ -22,12 +22,16 @@ def test_Solver_parse_input():
     assert solver.hands[4].cards == 'QQQJA'
     assert solver.hands[4].bid == 483
 
-def test_Solver_compare_camel_card_hands():
-    solver = Solver()
-    solver.parse_input(input.split('\n'))
-    solver.hands.sort(key=solver.compare_camel_card_hands)
-    assert solver.hands[0].cards == '32T3K'
-    assert solver.hands[1].cards == 'KK677'
-    assert solver.hands[2].cards == 'KTJJT'
-    assert solver.hands[3].cards == 'T55J5'
-    assert solver.hands[4].cards == 'QQQJA'
+@pytest.mark.parametrize('hands,expected', [
+    (
+        [CamelCardHand('33332 0'),CamelCardHand('2AAAA 0')],
+        [CamelCardHand('2AAAA 0'),CamelCardHand('33332 0')]
+    ),
+    (
+        [CamelCardHand('32T3K 765'),CamelCardHand('T55J5 684'),CamelCardHand('KK677 28'),CamelCardHand('KTJJT 220'),CamelCardHand('QQQJA 483')],
+        [CamelCardHand('32T3K 765'),CamelCardHand('KTJJT 220'),CamelCardHand('KK677 28'),CamelCardHand('T55J5 684'),CamelCardHand('QQQJA 483')]
+    ),
+])
+def test_Solver_sort(hands : "list(CamelCardHand)", expected : "list(CamelCardHand)"):
+    hands.sort()
+    assert hands == expected
