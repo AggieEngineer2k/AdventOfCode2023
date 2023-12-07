@@ -8,7 +8,7 @@ from common.input_parser import InputParser
 import re
 from collections import Counter
 
-ranks = [
+part_1_ranks = [
     '1', # 0
     '2',
     '3',
@@ -23,25 +23,47 @@ ranks = [
     'Q',
     'K',
     'A' # 13
-] 
+]
+part_2_ranks = [
+    'J', # 0
+    '1', 
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    'T',
+    'Q',
+    'K',
+    'A' # 13
+]
+is_part_1 = True
 
 class CamelCardHand:
     cards : str
+    pretend_cards : str
     bid : int
     def __init__(self, hand : str):
         m = re.match(r'(?P<cards>\w+) (?P<bid>\d+)', hand)
         self.cards = m['cards']
         self.bid = int(m['bid'])
+        self.pretend_cards = self.cards    
+    def replace_wildcards(self):
+        pass
     def __str__(self) -> str:
-        return f"'{self.cards}' {self.bid}"
+        return f"'{self.cards}' ({self.pretend_cards}) {self.bid}"
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return other.cards == self.cards and other.bid == self.bid
         return NotImplemented
     def __gt__(self, other):
+        ranks = part_1_ranks if is_part_1 else part_2_ranks
         # Counters produce dictionaries of the counts of each rank in the hands.
-        self_counter = dict(Counter([*self.cards]))
-        other_counter = dict(Counter([*other.cards]))
+        self_counter = dict(Counter([*self.pretend_cards]))
+        other_counter = dict(Counter([*other.pretend_cards]))
         # Counts are just the values from the counters; just he cardinalities.
         self_counts = list(self_counter.values())
         other_counts = list(other_counter.values())
@@ -86,7 +108,11 @@ class Solver:
         result = self.get_winnings()
         print(f"Part 1: {result}")
     def part_2(self):
-        result = None
+        is_part_1 = False
+        for x in self.hands:
+            x.replace_wildcards()
+        self.hands.sort()
+        result = self.get_winnings()
         print(f"Part 2: {result}")
 
 # Parse the input file.
