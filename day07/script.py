@@ -5,7 +5,6 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardi
 
 # Import helper modules.
 from common.input_parser import InputParser
-from enum import Enum
 import re
 from collections import Counter
 
@@ -52,6 +51,11 @@ class CamelCardHand:
                 return True
             elif self_counts.count(x) < other_counts.count(x):
                 return False
+            # Check for Full House
+            elif x == 3 and self_counts.count(3) == 1 and other_counts.count(3) == 1 and self_counts.count(2) > other_counts.count(2):
+                return True
+            elif x == 3 and self_counts.count(3) == 1 and other_counts.count(3) == 1 and self_counts.count(2) < other_counts.count(2):
+                return False
             # Compare lexicographically when the hands have the same winning condition.
             elif self_counts.count(x) == other_counts.count(x) and self_counts.count(x) > 0 and other_counts.count(x) > 0:
                 for y in range(5):
@@ -59,40 +63,6 @@ class CamelCardHand:
                         return True
                     elif ranks.index(self.cards[y]) < ranks.index(other.cards[y]):
                         return False
-    # Implementing because I'm not sure if Python will infer these correctly or not.
-    # def __lt__(self, other):
-    #     eq = self.__eq__(other)
-    #     gt = self.__gt__(other)
-    #     if eq is NotImplemented or gt is NotImplemented:
-    #         return NotImplemented
-    #     return not eq and not gt
-    # def __le__(self, other):
-    #     eq = self.__eq__(other)
-    #     gt = self.__gt__(other)
-    #     if eq is NotImplemented or gt is NotImplemented:
-    #         return NotImplemented
-    #     return eq or not gt
-    # def __ne__(self, other):
-    #     x = self.__eq__(other)
-    #     if x is NotImplemented:
-    #         return NotImplemented
-    #     return not x
-    # def __ge__(self, other):
-    #     eq = self.__eq__(other)
-    #     gt = self.__gt__(other)
-    #     if eq is NotImplemented or gt is NotImplemented:
-    #         return NotImplemented
-    #     return eq or gt
-
-def compare_camel_card_hands(left : CamelCardHand, right : CamelCardHand) -> int:
-    for x in range(5):
-        left_rank = ranks.index(left.cards[x])
-        right_rank = ranks.index(right.cards[x])
-        if left_rank > right_rank:
-            return 1
-        if right_rank < left_rank:
-            return -1
-    return 0
 
 # Define the puzzle solver.
 class Solver:
@@ -104,13 +74,16 @@ class Solver:
         use_input = input or self.input
         for line in use_input:
             self.hands.append(CamelCardHand(line))
-    def part_1(self):
-        self.hands.sort()
+    def get_winnings(self):
         result = 0
         for i in range(len(self.hands)):
             hand = self.hands[i]
             logging.debug(f"{i:3}: {list(dict(Counter([*hand.cards])).values())} {hand}")
             result = result + ((i + 1) * hand.bid)
+        return result
+    def part_1(self):
+        self.hands.sort()
+        result = self.get_winnings()
         print(f"Part 1: {result}")
     def part_2(self):
         result = None

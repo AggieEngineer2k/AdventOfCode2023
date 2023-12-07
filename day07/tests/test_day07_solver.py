@@ -31,7 +31,15 @@ def test_Solver_parse_input():
         [CamelCardHand('32T3K 765'),CamelCardHand('T55J5 684'),CamelCardHand('KK677 28'),CamelCardHand('KTJJT 220'),CamelCardHand('QQQJA 483')],
         [CamelCardHand('32T3K 765'),CamelCardHand('KTJJT 220'),CamelCardHand('KK677 28'),CamelCardHand('T55J5 684'),CamelCardHand('QQQJA 483')]
     ),
+    # Need unit test(s) for Full House
 ])
 def test_Solver_sort(hands : "list(CamelCardHand)", expected : "list(CamelCardHand)"):
     hands.sort()
     assert hands == expected
+
+def test_Solver_get_winnings():
+    solver = Solver()
+    solver.parse_input(input.split('\n'))
+    solver.hands.sort()
+    actual = solver.get_winnings()
+    assert actual == 6440
