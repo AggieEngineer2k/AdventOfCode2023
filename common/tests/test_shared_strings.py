@@ -20,6 +20,18 @@ from common.strings import all_replacements
         ['b','*'],
         ['abc']
     ),
+    (
+        'abc',
+        '*',
+        ['z'],
+        ['abc']
+    ),
+    (
+        'a*',
+        '*',
+        ['b','c'],
+        ['ab','ac']
+    ),
 ])
 def test_all_replacements(s,w,r,expected):
     actual = [*all_replacements(s,w,r)]

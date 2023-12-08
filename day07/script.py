@@ -7,6 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardi
 from common.input_parser import InputParser
 import re
 from collections import Counter
+from common.strings import all_replacements
 
 part_1_ranks = [
     '1', # 0
@@ -50,9 +51,15 @@ class CamelCardHand:
         m = re.match(r'(?P<cards>\w+) (?P<bid>\d+)', hand)
         self.cards = m['cards']
         self.bid = int(m['bid'])
-        self.pretend_cards = self.cards    
+        self.pretend_cards = m['cards']    
     def replace_wildcards(self):
-        pass
+        if self.cards.find('J') >= 0:
+            replacements = []
+            for x in all_replacements(self.cards, 'J', part_2_ranks[1:]):
+                replacements.append(CamelCardHand(f"{x} {self.bid}"))
+            replacements.sort()
+            self.pretend_cards = replacements[-1].cards
+            logging.debug(f"Replacing '{self.cards}' with '{self.pretend_cards}'.")
     def __str__(self) -> str:
         return f"'{self.cards}' ({self.pretend_cards}) {self.bid}"
     def __eq__(self, other):
@@ -108,6 +115,7 @@ class Solver:
         result = self.get_winnings()
         print(f"Part 1: {result}")
     def part_2(self):
+        global is_part_1
         is_part_1 = False
         for x in self.hands:
             x.replace_wildcards()
