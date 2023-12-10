@@ -6,6 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardi
 # Import helper modules.
 from common.input_parser import InputParser
 import re
+from common.math import lcm
 
 L = 'L'
 R = 'R'
@@ -56,6 +57,7 @@ class Solver:
                 if direction_index == len(self.directions):
                     direction_index = 0
                 steps[i] += 1
+        result = lcm(steps)
         
         # ---
         # Attempt 1: Brute Force
@@ -72,7 +74,6 @@ class Solver:
         #         direction_index = 0
         #     steps += 1
         
-        result = None
         print(f"Part 2: {result}")
 
 # Parse the input file.
