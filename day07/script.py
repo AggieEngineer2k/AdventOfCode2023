@@ -53,13 +53,15 @@ class CamelCardHand:
         self.bid = int(m['bid'])
         self.pretend_cards = m['cards']    
     def replace_wildcards(self):
-        if self.cards.find('J') >= 0:
+        if self.cards == 'JJJJJ':
+            self.pretend_cards = 'AAAAA'
+        elif self.cards.find('J') >= 0:
             replacements = []
             for x in all_replacements(self.cards, 'J', part_2_ranks[1:]):
                 replacements.append(CamelCardHand(f"{x} {self.bid}"))
             replacements.sort()
             self.pretend_cards = replacements[-1].cards
-            logging.debug(f"Replacing '{self.cards}' with '{self.pretend_cards}'.")
+        logging.debug(f"Replacing '{self.cards}' with '{self.pretend_cards}'.")
     def __str__(self) -> str:
         return f"'{self.cards}' ({self.pretend_cards}) {self.bid}"
     def __eq__(self, other):
