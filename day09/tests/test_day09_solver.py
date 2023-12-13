@@ -25,3 +25,13 @@ def test_Solver_extrapolate_next_history(numbers : "list(int)", expected : int):
     solver = Solver()
     actual = solver.extrapolate_next_history(numbers)
     assert expected == actual
+
+@pytest.mark.parametrize('numbers,expected', [
+    ([0,3,6,9,12,15],-3),
+    ([1,3,6,10,15,21],0),
+    ([10,13,16,21,30,45],5)
+])
+def test_Solver_extrapolate_previous_history(numbers : "list(int)", expected : int):
+    solver = Solver()
+    actual = solver.extrapolate_previous_history(numbers)
+    assert expected == actual

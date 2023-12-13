@@ -34,6 +34,20 @@ class Solver:
                 return numbers[-1]
             else:
                 return numbers[-1] + extrapolated
+            
+    def extrapolate_previous_history(self, numbers : "list(int)") -> int:
+        logging.debug(f"Extrapolating from numbers: {numbers}")
+        if all([x==0 for x in numbers]):
+            return 0
+        else:
+            differences = [numbers[x + 1] - numbers[x] for x in range(len(numbers) - 1)]
+            logging.debug(f" Differences: {differences}")
+            extrapolated = self.extrapolate_previous_history(differences)
+            logging.debug(f" Extrapolated: {extrapolated}")
+            if extrapolated == 0:
+                return numbers[0]
+            else:
+                return numbers[0] - extrapolated
     
     def part_1(self):
         extrapolations = [self.extrapolate_next_history(self.histories[x]) for x in range(len(self.histories))]
@@ -41,7 +55,8 @@ class Solver:
         print(f"Part 1: {result}")
 
     def part_2(self):
-        result = None     
+        extrapolations = [self.extrapolate_previous_history(self.histories[x]) for x in range(len(self.histories))]
+        result = sum(extrapolations)    
         print(f"Part 2: {result}")
 
 # Parse the input file.
