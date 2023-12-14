@@ -3,9 +3,13 @@ import re
 class Grid:
     def __init__(self):
         self.elements = None
+        self.height = None
+        self.width = None
 
     def initialize_from_strings(self, strings : "list(str)"):
         self.elements = [[x for x in y] for y in strings]
+        self.height = len(self.elements)
+        self.width = len(self.elements[0])
 
     def find_tokens_in_rows(self, pattern : str):
         "Returns a tuple with the row index, element index, and matching value for each matching pattern."
