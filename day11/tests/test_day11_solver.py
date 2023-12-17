@@ -28,6 +28,9 @@ expanded_universe = """....#........
 def test_Solver_parse_input():
     solver = Solver(starting_universe.split('\n'))
     solver.parse_input()
+    assert solver.grid.height == 10
+    assert solver.grid.width == 10
+    solver.double_space()
     assert solver.grid.height == 12
     assert solver.grid.width == 13
 
