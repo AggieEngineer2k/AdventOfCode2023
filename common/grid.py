@@ -8,6 +8,9 @@ class Grid:
 
     def initialize_from_strings(self, strings : "list(str)"):
         self.elements = [[x for x in y] for y in strings]
+        self.update_grid_dimensions()
+
+    def update_grid_dimensions(self):
         self.height = len(self.elements)
         self.width = len(self.elements[0])
 
@@ -23,6 +26,12 @@ class Grid:
                     "end": m.start(0) + len(m.group(0)) - 1,
                     "value": m.group(0)
                 }
+
+    def get_row(self, row : int):
+        return self.elements[row]
+    
+    def get_column(self, column : int):
+        return [self.elements[x][column] for x in range(self.height)]
 
     def get_element(self, row : int, column : int):
         return {
@@ -49,3 +58,22 @@ class Grid:
             #for x in self.elements[row + 1][max(0,start - 1):min(len(self.elements[row]) - 1, end + 1) + 1]:
             for column in range(max(0,start - 1), min(len(self.elements[row]) - 1, end + 1) + 1):
                 yield self.get_element(row + 1, column)
+
+    def insert_row(self, row : int, element):
+        row_to_insert = [element] * self.width
+        self.elements.insert(row, row_to_insert)
+        self.update_grid_dimensions()
+
+    def insert_column(self, column : int, element):
+        for x in range(self.height):
+            self.elements[x].insert(column, element)
+        self.update_grid_dimensions()
+
+    def remove_row(self, row : int):
+        del self.elements[row]
+        self.update_grid_dimensions()
+
+    def remove_column(self, column : int):
+        for x in range(self.height):
+            del self.elements[x][column]
+        self.update_grid_dimensions()
