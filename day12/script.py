@@ -10,8 +10,11 @@ from common import strings
 
 # Define the puzzle solver.
 class Solver:
+    arrangements : dict
+
     def __init__(self, input = []):
         self.input = input
+        self.arrangements = {}
 
     def get_nonogrid(self, record):
         group_lengths = [len(group) for group in re.findall(r"(#+)",record)]
@@ -25,15 +28,31 @@ class Solver:
         check = [int(x) for x in re.findall(r"(\d+)", record)]
         return check
     
-    def find_arrangements(self, record):
+    def find_possible_arrangements(self, record) -> list:
+        # Cache possible arrangements of the condition.
         condition = self.extract_condition(record)
+        if condition not in list(self.arrangements.keys()):
+            possible_arrangements = list(strings.all_replacements(condition,'?',['.','#']))
+            logging.debug(f"Caching {len(possible_arrangements)} possible arrangements for '{condition}'.")
+            self.arrangements[condition] = possible_arrangements
+        return self.arrangements[condition]
+    
+    def find_acceptable_arrangements(self, record) -> list:
+        # Filter on arrangements that satisfy the check.
+        condition = self.extract_condition(record)
+        possible_arrangements = self.find_possible_arrangements(condition)
         check = self.extract_check(record)
-        possible_arrangements = strings.all_replacements(condition,'?',['.','#'])
         acceptable_arrangements = [x for x in possible_arrangements if self.get_nonogrid(x) == check]
+        logging.debug(f"Found {len(acceptable_arrangements)}/{len(possible_arrangements)} acceptable arrangements for '{condition}' matching '{check}'.")
         return acceptable_arrangements
    
     def part_1(self):
-        result = sum(len(self.find_arrangements(x)) for x in self.input)
+        for x in self.input:
+            _ = self.find_possible_arrangements(x)
+        result = 0
+        for x in self.input:
+            acceptable_arrangements = self.find_acceptable_arrangements(x)
+            result += len(acceptable_arrangements)
         print(f"Part 1: {result}")
 
     def part_2(self):
