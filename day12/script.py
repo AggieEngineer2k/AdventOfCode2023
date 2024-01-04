@@ -6,53 +6,49 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardi
 # Import helper modules.
 from common.input_parser import InputParser
 import re
-from common import strings
 
 # Define the puzzle solver.
+# Following https://www.bing.com/videos/riverview/relatedvideo?q=advent+of+code+2023+day+12&mid=73D0A428926E008801EB73D0A428926E008801EB&FORM=VIRE
 class Solver:
-    arrangements : dict
-
     def __init__(self, input = []):
         self.input = input
-        self.arrangements = {}
 
-    def get_nonogrid(self, record):
-        group_lengths = [len(group) for group in re.findall(r"(#+)",record)]
-        return group_lengths
-    
-    def extract_condition(self, record):
-        condition = re.match(r"([#.?]+)",record).group(1)
-        return condition
-    
-    def extract_check(self, record):
-        check = [int(x) for x in re.findall(r"(\d+)", record)]
-        return check
-    
-    def find_possible_arrangements(self, record) -> list:
-        # Cache possible arrangements of the condition.
-        condition = self.extract_condition(record)
-        if condition not in list(self.arrangements.keys()):
-            possible_arrangements = list(strings.all_replacements(condition,'?',['.','#']))
-            logging.debug(f"Caching {len(possible_arrangements)} possible arrangements for '{condition}'.")
-            self.arrangements[condition] = possible_arrangements
-        return self.arrangements[condition]
-    
-    def find_acceptable_arrangements(self, record) -> list:
-        # Filter on arrangements that satisfy the check.
-        condition = self.extract_condition(record)
-        possible_arrangements = self.find_possible_arrangements(condition)
-        check = self.extract_check(record)
-        acceptable_arrangements = [x for x in possible_arrangements if self.get_nonogrid(x) == check]
-        logging.debug(f"Found {len(acceptable_arrangements)}/{len(possible_arrangements)} acceptable arrangements for '{condition}' matching '{check}'.")
-        return acceptable_arrangements
+    def parse_record(self, record : str) -> tuple:
+        condition, check = record.split()
+        return condition, list(map(int, check.split(',')))
+
+    def count_arrangements(self, condition : str, check : "list(int)") -> int:
+        # Return a valid arrangement if we reached the end of the condition with an empty check.
+        if condition == "":
+            return 1 if check == [] else 0
+        
+        # Return a valid arrangement if we reached the end of the check with no remaining broken springs left to count.
+        # Assume any remaining ? to be working springs.
+        if check == []:
+            return 0 if '#' in condition else 1
+        
+        number_of_arrangements = 0
+
+        # For leading '.' character.
+        if condition[0] in '.?':
+            # Add arrangements without the leading character.
+            number_of_arrangements += self.count_arrangements(condition[1:], check)
+
+        # For leading '#' character.
+        if condition[0] in '#?':
+            # Ensure enough contiguous broken '#' or unknown '?' (i.e. not working '.') springs left at front of condition to satisfy first check,
+            # and the condition is either exactly enough remaining springs OR is NOT followed by another broken spring.
+            if len(condition) >= check[0] and '.' not in condition[:check[0]] and (len(condition) == check[0] or condition[check[0]] != '#'):
+                # Add the number of arrangements of the condition with the first check removed (and the succeeding '.') and the checks with the first removed.
+                number_of_arrangements += self.count_arrangements(condition[check[0] + 1:], check[1:])
+
+        return number_of_arrangements
    
     def part_1(self):
-        for x in self.input:
-            _ = self.find_possible_arrangements(x)
         result = 0
-        for x in self.input:
-            acceptable_arrangements = self.find_acceptable_arrangements(x)
-            result += len(acceptable_arrangements)
+        for record in self.input:
+            condition, check = self.parse_record(record)
+            result += self.count_arrangements(condition, check)
         print(f"Part 1: {result}")
 
     def part_2(self):
