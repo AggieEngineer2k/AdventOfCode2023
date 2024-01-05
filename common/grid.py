@@ -77,3 +77,6 @@ class Grid:
         for x in range(self.height):
             del self.elements[x][column]
         self.update_grid_dimensions()
+
+    def __str__(self):
+        return '\n'.join([''.join([str(element) for element in row]) for row in self.elements])

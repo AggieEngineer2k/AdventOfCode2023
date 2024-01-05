@@ -15,6 +15,14 @@ def test_Grid_initialize_from_strings():
     assert len(grid.elements[0]) == len(strings[0])
     assert grid.elements[0][0] == character
 
+def test_Grid_str():
+    # 3x3 grid of '.' characters.
+    character = '.'
+    strings = [character * 3] * 3
+    grid = Grid()
+    grid.initialize_from_strings(strings)
+    assert str(grid) == '\n'.join(['.' * 3] * 3)
+
 @pytest.mark.parametrize("strings,pattern,expected", [
     (
         [
