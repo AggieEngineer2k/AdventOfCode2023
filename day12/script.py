@@ -1,6 +1,6 @@
 # Setup the environment.
 import sys,os,logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardir))
 
 # Import helper modules.
@@ -12,20 +12,26 @@ import re
 class Solver:
     def __init__(self, input = []):
         self.input = input
+        self.cache = {}
 
     def parse_record(self, record : str) -> tuple:
         condition, check = record.split()
-        return condition, list(map(int, check.split(',')))
+        return condition, tuple(map(int, check.split(',')))
 
-    def count_arrangements(self, condition : str, check : "list(int)") -> int:
+    def count_arrangements(self, condition : str, check : "tuple(int)") -> int:
         # Return a valid arrangement if we reached the end of the condition with an empty check.
         if condition == "":
-            return 1 if check == [] else 0
+            return 1 if check == () else 0
         
         # Return a valid arrangement if we reached the end of the check with no remaining broken springs left to count.
         # Assume any remaining ? to be working springs.
-        if check == []:
+        if check == ():
             return 0 if '#' in condition else 1
+        
+        key = (condition, check)
+        if key in self.cache:
+            logging.debug(f"Cache Hit: {condition} {check} -> {self.cache[key]}")
+            return self.cache[key]
         
         number_of_arrangements = 0
 
@@ -42,6 +48,8 @@ class Solver:
                 # Add the number of arrangements of the condition with the first check removed (and the succeeding '.') and the checks with the first removed.
                 number_of_arrangements += self.count_arrangements(condition[check[0] + 1:], check[1:])
 
+        self.cache[key] = number_of_arrangements
+
         return number_of_arrangements
    
     def part_1(self):
@@ -52,7 +60,12 @@ class Solver:
         print(f"Part 1: {result}")
 
     def part_2(self):
-        result = None
+        result = 0
+        for record in self.input:
+            condition, check = self.parse_record(record)
+            condition = '?'.join([condition] * 5)
+            check *= 5
+            result += self.count_arrangements(condition, check)
         print(f"Part 2: {result}")
 
 # Parse the input file.
