@@ -32,6 +32,17 @@ class Grid:
     
     def get_column(self, column : int):
         return [self.elements[x][column] for x in range(self.height)]
+    
+    def replace_row(self, row : int, elements):
+        if len(self.get_row(row)) != len(elements):
+            raise Exception('Cardinality mismatch between row and replacements.')
+        self.elements[row] = elements
+        
+    def replace_column(self, column : int, elements):
+        if len(self.get_column(column)) != len(elements):
+            raise Exception('Cardinality mismatch between column and replacements.')
+        for i in range(len(elements)):
+            self.elements[i][column] = elements[i]
 
     def get_element(self, row : int, column : int):
         return {
