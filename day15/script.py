@@ -22,7 +22,25 @@ class Solver:
         print(f"Part 1: {result}")
 
     def part_2(self):
-        result = None
+        boxes = [dict() for x in range(256)]
+        for step in re.split(',',self.input):
+            label, operation, focal_length = re.match(r"(\w+)([-=])(\d+)?",step).groups()
+            box_number = self.algorithm(label)
+            box = boxes[box_number]
+            if operation == '=':
+                #logging.debug(f"Adding/updating lens '{label}' with focal length {focal_length} to box #{box_number}.")
+                box[label] = focal_length
+            if operation == '-':
+                if label in box:
+                    #logging.debug(f"Removing lens '{label}' from box #{box_number}.")
+                    box.pop(label)
+                else:
+                    #logging.debug(f"Couldn't remove lens '{label}' from box #{box_number}.")
+                    pass
+        result = 0
+        for box_number in range(len(boxes)):
+            box = boxes[box_number]
+            result += sum([(1 + box_number) * (index + 1) * (int(focal_length)) for index, (label, focal_length) in enumerate(box.items())])
         print(f"Part 2: {result}")
 
 # Parse the input file.
