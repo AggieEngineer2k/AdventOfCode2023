@@ -91,3 +91,6 @@ class Grid:
 
     def __str__(self):
         return '\n'.join([''.join([str(element) for element in row]) for row in self.elements])
+    
+    def set_value(self, row : int, column : int, value):
+        self.elements[row][column] = value
