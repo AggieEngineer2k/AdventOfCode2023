@@ -23,10 +23,12 @@ maze = Grid()
 maze.initialize_from_strings(input)
 # A grid to store the energization state.
 energized = Grid()
-energized.initialize_from_strings([['.'] * maze.width] * maze.height)
 # A grid to break beam loops.
 passing = Grid()
-passing.elements = [[[] for _ in range(maze.width)] for _ in range(maze.height)]
+
+def reset_grids():
+    energized.initialize_from_strings([['.'] * maze.width] * maze.height)
+    passing.elements = [[[] for _ in range(maze.width)] for _ in range(maze.height)]
 
 def shine_beam(row : int, column : int, direction : Direction):
     # Beam has exited the maze.
@@ -93,13 +95,37 @@ def shine_beam(row : int, column : int, direction : Direction):
         elif element == '-':
             yield (row, column + 1, Direction.RIGHT)
 
-# The beam enters the maze from the top left, going right.
-beams = [*shine_beam(row=0, column=0, direction=Direction.RIGHT)]
-while beams:
-    next_beams = []
-    for beam in beams:
-        next_beams.extend(shine_beam(beam[0], beam[1], beam[2]))
-    beams = next_beams
+def get_energy(row : int, column : int, direction : Direction):
+    reset_grids()
+    beams = [*shine_beam(row, column, direction)]
+    while beams:
+        next_beams = []
+        for beam in beams:
+            next_beams.extend(shine_beam(beam[0], beam[1], beam[2]))
+        beams = next_beams
+    return len([*energized.find_tokens_in_rows('#')])
 
-result = len([*energized.find_tokens_in_rows('#')])
+# The beam enters the maze from the top left, going right.
+result = get_energy(0, 0, Direction.RIGHT)
 print(f"Part 1: {result}")
+
+for beam in [
+    (0,0,Direction.DOWN),
+    #(0,0,Direction.RIGHT), # completed in part 1
+    (0,maze.width-1,Direction.DOWN),
+    (0,maze.width-1,Direction.LEFT),
+    (maze.height-1,0,Direction.UP),
+    (maze.height-1,0,Direction.RIGHT),
+    (maze.height-1,maze.width-1,Direction.UP),
+    (maze.height-1,maze.width-1,Direction.LEFT)
+]:
+    result = max(result, get_energy(beam[0], beam[1], beam[2]))
+# Top edge going down, bottom edge going up.
+for c in range(1,maze.width - 2):
+    result = max(result, get_energy(0, c, Direction.DOWN))
+    result = max(result, get_energy(maze.height - 1, c, Direction.UP))
+# Left edge going right, right edge going left.
+for r in range(1,maze.height - 2):
+    result = max(result, get_energy(r, 0, Direction.RIGHT))
+    result = max(result, get_energy(r, maze.width - 1, Direction.LEFT))
+print(f"Part 2: {result}")
