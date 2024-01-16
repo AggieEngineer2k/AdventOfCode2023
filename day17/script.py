@@ -1,6 +1,6 @@
 # Setup the environment.
 import sys,os,logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),os.pardir))
 
 # Import helper modules.
@@ -30,7 +30,7 @@ class ShortestPathVertex:
         self.previous_direction = Path.BLANK
         self.previous_blocks = 0
     def __str__(self) -> str:
-        return str(self.path.value if self.path != Path.BLANK else self.heat_loss)
+        return self.path.value
 
 class ShortestPathGraph:
     def __init__(self, vertices):
@@ -55,20 +55,22 @@ class ShortestPathGraph:
         # Right
         if current.column < self.columns - 1 and not (previous_direction == Path.RIGHT and previous_blocks == 3):
             neighbors.append(self.vertices[current.row][current.column + 1])
-        return [neighbor for neighbor in neighbors if not neighbor.visited]
+        results = [neighbor for neighbor in neighbors if not neighbor.visited]
+        logging.debug(f"Unvisited neighbors for ({current.row},{current.column}) are: {', '.join([f'({x.row},{x.column})' for x in results])}.")
+        return results
     def findUnvisitedVertexWithSmallestTotalHeatLoss(self):
         unvisited = [vertex for _, row in enumerate(self.vertices) for _, vertex in enumerate(row) if vertex.visited == False]
         unvisited.sort(key=lambda x: x.total_heat_loss)
-        logging.debug(f'Next to visit is ({unvisited[0].row},{unvisited[0].column})')
+        logging.debug(f'Next to visit is ({unvisited[0].row},{unvisited[0].column}) {unvisited[0].path.value} from ({unvisited[0].parent.row},{unvisited[0].parent.column}).')
         return unvisited[0]
     def findShortestPath(self, start : ShortestPathVertex, end : ShortestPathVertex):
-        start.total_heat_loss = start.heat_loss
+        start.total_heat_loss = 0
         start.path = Path.START
         end.path = Path.END
         # Start searching from the starting vertex and continue searching until the ending vertex is the next to be visited.
         current = start
         while current != end:
-            logging.debug(f'Visiting ({current.row},{current.column}) at total heat loss {current.total_heat_loss}.')
+            logging.debug(f'Visiting ({current.row},{current.column}) at total heat loss {current.total_heat_loss} after {current.previous_blocks} {current.previous_direction.value}.')
             for neighbor in self.findUnvisitedNeighbors(current, current.previous_direction, current.previous_blocks):
                 if neighbor.total_heat_loss > current.total_heat_loss + neighbor.heat_loss:
                     neighbor.total_heat_loss = current.total_heat_loss + neighbor.heat_loss
@@ -82,24 +84,24 @@ class ShortestPathGraph:
                     elif(neighbor.column < current.column):
                         neighbor.path = Path.LEFT
                     # Keep track of the direction and blocks traveled.
+                    neighbor.previous_direction = neighbor.path
                     if(current.previous_direction == neighbor.path):
                         neighbor.previous_blocks = current.previous_blocks + 1
                     else:
-                        neighbor.previous_direction = neighbor.path
                         neighbor.previous_blocks = 1
             current.visited = True
             current = self.findUnvisitedVertexWithSmallestTotalHeatLoss()
         current.path = Path.END
         return end
     def __str__(self) -> str:
-        #return '\n'.join([''.join([str(v.path) for v in r]) for r in self.vertices])
         return '\n'.join([''.join([str(c) for c in r]) for r in self.vertices])
 
 # Parse the input file.
-input = InputParser.parse_lines(__file__, "example.txt")
+input = InputParser.parse_lines(__file__, "input.txt")
 graph = ShortestPathGraph([[float(x) for x in list(line)] for line in input])
 # Top left to bottom right.
 start = graph.vertices[0][0]
 end = graph.vertices[graph.rows - 1][graph.columns - 1]
 graph.findShortestPath(start,end)
 logging.debug('GRAPH:\n' + str(graph))
+print(f"Part 1: {end.total_heat_loss}")
